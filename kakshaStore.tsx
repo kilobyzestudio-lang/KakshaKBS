@@ -334,7 +334,8 @@ export const KakshaProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
     // Save profile to Firestore so other devices can find this user by Kaksha ID
     try {
-      setDoc(doc(db, 'kaksha_users', newUser.id), {
+      const safeDocId = newUser.id.replace(/[^a-zA-Z0-9_-]/g, '_');
+      setDoc(doc(db, 'kaksha_users', safeDocId), {
         id: newUser.id,
         kakshaId: newUser.kakshaId,
         name: newUser.name,
@@ -344,8 +345,12 @@ export const KakshaProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         avatarUrl: newUser.avatarUrl || '',
         phone: newUser.phone || '',
         createdAt: newUser.createdAt,
-      }, { merge: true }).catch(() => {});
-    } catch (_) {}
+      }, { merge: true }).catch((err) => {
+        console.error('Firestore save new user error:', err);
+      });
+    } catch (err) {
+      console.error('Firestore save new user exception:', err);
+    }
 
     return newUser;
   };
