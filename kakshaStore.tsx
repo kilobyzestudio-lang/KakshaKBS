@@ -291,6 +291,22 @@ export const KakshaProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       setUsers((prev) => prev.map((u) => (u.id === existing.id ? updatedUser : u)));
       setCurrentUser(updatedUser);
       setIsAuthenticated(true);
+
+      // Sync to Firestore on login
+      try {
+        setDoc(doc(db, 'kaksha_users', updatedUser.id), {
+          id: updatedUser.id,
+          kakshaId: updatedUser.kakshaId || '',
+          name: updatedUser.name || 'User',
+          email: updatedUser.email || '',
+          role: updatedUser.role || 'student',
+          authProvider: updatedUser.authProvider || 'google',
+          avatarUrl: updatedUser.avatarUrl || '',
+          phone: updatedUser.phone || '',
+          createdAt: updatedUser.createdAt || new Date().toISOString(),
+        }, { merge: true }).catch(() => {});
+      } catch (_) {}
+
       return updatedUser;
     }
 
@@ -328,7 +344,7 @@ export const KakshaProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         avatarUrl: newUser.avatarUrl || '',
         phone: newUser.phone || '',
         createdAt: newUser.createdAt,
-      }).catch(() => {});
+      }, { merge: true }).catch(() => {});
     } catch (_) {}
 
     return newUser;
@@ -353,6 +369,22 @@ export const KakshaProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       setUsers((prev) => prev.map((u) => (u.id === existing.id ? updatedUser : u)));
       setCurrentUser(updatedUser);
       setIsAuthenticated(true);
+
+      // Sync to Firestore on login
+      try {
+        setDoc(doc(db, 'kaksha_users', updatedUser.id), {
+          id: updatedUser.id,
+          kakshaId: updatedUser.kakshaId || '',
+          name: updatedUser.name || 'User',
+          email: updatedUser.email || '',
+          role: updatedUser.role || 'student',
+          authProvider: updatedUser.authProvider || 'supabase',
+          avatarUrl: updatedUser.avatarUrl || '',
+          phone: updatedUser.phone || '',
+          createdAt: updatedUser.createdAt || new Date().toISOString(),
+        }, { merge: true }).catch(() => {});
+      } catch (_) {}
+
       return updatedUser;
     }
 
@@ -392,7 +424,7 @@ export const KakshaProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         avatarUrl: newUser.avatarUrl || '',
         phone: newUser.phone || '',
         createdAt: newUser.createdAt,
-      }).catch(() => {});
+      }, { merge: true }).catch(() => {});
     } catch (_) {}
 
     return newUser;
